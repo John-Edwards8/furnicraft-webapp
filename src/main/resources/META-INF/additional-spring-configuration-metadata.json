@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "services.client.url",
+    "type": "java.lang.String",
+    "description": "URL for ClientService"
+  },
+  {
+    "name": "services.order.url",
+    "type": "java.lang.String",
+    "description": "URL for OrderService"
+  }
+]}

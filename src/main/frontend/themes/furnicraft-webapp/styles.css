@@ -1,0 +1,8 @@
+@import url('./main-layout.css');
+@import url('./views/furni-craft-designs-view.css');
+@import url('./views/clients-view.css');    html, spreadsheet-view-export, grid-with-filters-view-export {
+      --lumo-border-radius-s: calc(var(--lumo-size-m) / 6);
+      --lumo-border-radius-m: calc(var(--lumo-size-m) / 2);
+      --lumo-border-radius-l: var(--lumo-size-m);
+
+    }

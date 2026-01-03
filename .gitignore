@@ -46,6 +46,7 @@ buildNumber.properties
 ### Vaadin ###
 .vaadin-designer
 .designer
+node_modules/
 
 ### Eclipse ###
 .metadata
@@ -108,3 +109,5 @@ local.properties
 ### Eclipse Patch ###
 # Spring Boot Tooling
 .sts4-cache/
+
+.vscode/
