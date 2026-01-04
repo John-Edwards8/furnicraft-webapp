@@ -43,3 +43,15 @@
 .clients-view .grid-wrapper {
   width: 100%;
 }
+
+.clients-view .clients-floating-actions {
+    position: absolute;
+    right: var(--lumo-space-m);
+    bottom: var(--lumo-space-xl);
+    z-index: 100;
+
+    transition:
+        right 200ms ease,
+        bottom 200ms ease,
+        opacity 150ms ease;
+}

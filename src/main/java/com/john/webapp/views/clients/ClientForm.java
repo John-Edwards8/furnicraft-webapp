@@ -27,17 +27,12 @@ public class ClientForm extends FormLayout {
     private TextField email;
     //private DatePicker dateOfBirth;
     
-    private final Button cancel = new Button("Cancel");
+    private Runnable onClose;
     private final Button save = new Button("Save");
 
 	public ClientForm(ClientServiceClient clientService, ClientGrid grid) {
 		super();
 		
-		cancel.addClickListener(e -> {
-        	binder.readBean(null);
-            grid.refreshGrid();
-        });
-
         save.addClickListener(e -> {
             try {
                 if (this.person == null) {
@@ -55,6 +50,11 @@ public class ClientForm extends FormLayout {
                 binder.readBean(null);
                 grid.refreshGrid();
                 Notification.show("Data updated");
+                
+                if (onClose != null) {
+                    onClose.run();
+                }
+                
                 UI.getCurrent().navigate(ClientsView.class);
             } catch (Exception exception) {
                 Notification n = Notification.show(exception.getMessage());
@@ -63,6 +63,10 @@ public class ClientForm extends FormLayout {
             }
         });
 	}
+	
+	public void setOnClose(Runnable callback) {
+        this.onClose = callback;
+    }
 	
 	public void clearForm() {
 		this.person = null;
@@ -93,17 +97,13 @@ public class ClientForm extends FormLayout {
         binder.bindInstanceFields(this);
         
         editorDiv.add(formLayout);
-        createButtonLayout(editorLayoutDiv);
-
-        splitLayout.addToSecondary(editorLayoutDiv);
-    }
-
-    private void createButtonLayout(Div editorLayoutDiv) {
+        
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setClassName("button-layout");
-        cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
+        buttonLayout.add(save);
         editorLayoutDiv.add(buttonLayout);
+
+        splitLayout.addToSecondary(editorLayoutDiv);
     }
 }
