@@ -41,7 +41,7 @@ public class ClientsView extends Div implements BeforeEnterObserver {
     private TextField name;
     private TextField surname;
     private TextField patronymic;
-    private TextField phone;
+    private TextField phoneNumber;
     private TextField email;
     //private DatePicker dateOfBirth;
 
@@ -103,15 +103,21 @@ public class ClientsView extends Div implements BeforeEnterObserver {
                 if (this.person == null) {
                     this.person = new ClientResponseDto();
                 }
+                
                 binder.writeBean(this.person);
-                clientService.createClient(this.person);
+                
+                if (this.person.getId() == null) {
+                    clientService.createClient(this.person);
+                } else {
+                    clientService.updateClient(this.person);
+                }
+                
                 clearForm();
                 refreshGrid();
                 Notification.show("Data updated");
                 UI.getCurrent().navigate(ClientsView.class);
             } catch (Exception exception) {
-                Notification n = Notification.show(
-                        "Error updating the data. Somebody else has updated the record while you were making changes.");
+                Notification n = Notification.show(exception.getMessage());
                 n.setPosition(Position.MIDDLE);
                 n.addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
@@ -148,10 +154,10 @@ public class ClientsView extends Div implements BeforeEnterObserver {
         name = new TextField("First Name");
         surname = new TextField("Last Name");
         patronymic = new TextField("Patronymic");
-        phone = new TextField("Phone");
+        phoneNumber = new TextField("Phone");
         email = new TextField("Email");
         //dateOfBirth = new DatePicker("Date Of Birth");
-        formLayout.add(name, surname, patronymic, phone, email/*, dateOfBirth*/);
+        formLayout.add(name, surname, patronymic, phoneNumber, email/*, dateOfBirth*/);
 
         editorDiv.add(formLayout);
         createButtonLayout(editorLayoutDiv);
@@ -177,7 +183,7 @@ public class ClientsView extends Div implements BeforeEnterObserver {
 
     private void refreshGrid() {
         grid.select(null);
-        grid.getDataProvider().refreshAll();
+        grid.setItems(clientService.getAllClients());
     }
 
     private void clearForm() {

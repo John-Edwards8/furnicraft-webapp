@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.reactive.function.client.WebClient;
 import com.john.webapp.dto.ClientResponseDto;
 import reactor.core.publisher.Mono;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 
 @Service
@@ -55,10 +55,10 @@ public class ClientServiceClient {
                 .block();
 	}
     
-	public void updateClient(@PathVariable Long id, @Valid ClientResponseDto request) {
+	public void updateClient(@Valid ClientResponseDto request) {
 		cli
 	        .put()
-	        .uri("/api/clients/{id}", id)
+	        .uri("/api/clients/{id}", request.getId())
 	        .bodyValue(request)
 	        .retrieve()
 	        .toBodilessEntity()

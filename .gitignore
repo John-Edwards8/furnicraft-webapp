@@ -47,6 +47,10 @@ buildNumber.properties
 .vaadin-designer
 .designer
 node_modules/
+src/main/frontend/generated/
+pnpmfile.js
+vite.generated.ts
+webpack.generated.js
 
 ### Eclipse ###
 .metadata
