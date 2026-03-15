@@ -1,18 +1,25 @@
 package com.john.webapp.views;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.vaadin.lineawesome.LineAwesomeIcon;
 import com.john.webapp.views.clients.ClientsView;
 import com.john.webapp.views.furnicraftdesigns.FurniCraftDesignsView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Nav;
 import com.vaadin.flow.component.html.UnorderedList;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Layout;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.spring.security.AuthenticationContext;
 import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
 import com.vaadin.flow.theme.lumo.LumoUtility.BoxSizing;
 import com.vaadin.flow.theme.lumo.LumoUtility.Display;
@@ -32,6 +39,8 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Width;
  */
 @Layout
 public class MainLayout extends AppLayout {
+	
+	private final AuthenticationContext authContext;
 
     public static class MenuItemInfo extends ListItem {
 
@@ -64,7 +73,8 @@ public class MainLayout extends AppLayout {
         }
     }
 
-    public MainLayout() {
+    public MainLayout(AuthenticationContext authContext) {
+    	this.authContext = authContext;
         addToNavbar(createHeader());
     }
 
@@ -106,23 +116,47 @@ public class MainLayout extends AppLayout {
         }
 
         nav.add(list);
+        
+        Button logoutBtn = new Button(VaadinIcon.SIGN_OUT.create(),
+                e -> authContext.logout());
+        logoutBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+        logoutBtn.setTooltipText("Вийти");
+        logoutBtn.getStyle()
+                .set("margin-left", "var(--lumo-space-m)")
+                .set("color", "var(--lumo-secondary-text-color)");
+ 
+        top.add(nav, logoutBtn);
+        
         header.add(top, nav);
 
         return header;
     }
 
     private MenuItemInfo[] createMenuItems() {
-        return new MenuItemInfo[]{
-                new MenuItemInfo(
-                        "FurniCraft Designs",
-                        LineAwesomeIcon.HOME_SOLID.create(),
-                        FurniCraftDesignsView.class
-                ),
-                new MenuItemInfo(
-                        "Clients",
-                        LineAwesomeIcon.ADDRESS_BOOK_SOLID.create(),
-                        ClientsView.class
-                )
-        };
+    	List<MenuItemInfo> items = new ArrayList<>();
+    	
+        items.add(new MenuItemInfo(
+                "Головна",
+                LineAwesomeIcon.HOME_SOLID.create(),
+                FurniCraftDesignsView.class
+        ));
+        
+        if (authContext.hasRole("ADMIN")) {
+            items.add(new MenuItemInfo(
+                    "Клієнти",
+                    LineAwesomeIcon.ADDRESS_BOOK_SOLID.create(),
+                    ClientsView.class
+            ));
+        }
+        
+        if (authContext.hasRole("CLIENT")) {
+            items.add(new MenuItemInfo(
+                    "Мої замовлення",
+                    LineAwesomeIcon.SHOPPING_CART_SOLID.create(),
+                    MyOrdersView.class
+            ));
+        }
+ 
+        return items.toArray(new MenuItemInfo[0]);
     }
 }

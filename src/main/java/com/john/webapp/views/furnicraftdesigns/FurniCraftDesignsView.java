@@ -10,12 +10,15 @@ import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
+
+import jakarta.annotation.security.PermitAll;
+
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("FurniCraft Designs")
 @Route(value = "", layout = MainLayout.class)
 @Menu(order = 0, icon = LineAwesomeIconUrl.HOME_SOLID)
-//@RolesAllowed("ADMIN")
+@PermitAll
 public class FurniCraftDesignsView extends Composite<VerticalLayout> {
 
     public FurniCraftDesignsView() {

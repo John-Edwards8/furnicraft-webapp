@@ -6,22 +6,28 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.john.webapp.components.AppGridContextMenu;
+import com.john.webapp.components.GridContextMenuAction;
 import com.john.webapp.dto.ClientResponseDto;
 import com.john.webapp.service.ClientServiceClient;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.popover.Popover;
 import com.vaadin.flow.component.popover.PopoverPosition;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
+import com.vaadin.flow.spring.security.AuthenticationContext;
 
 public class ClientGrid extends Grid<ClientResponseDto> {
     private final ClientServiceClient clientService;
@@ -111,5 +117,53 @@ public class ClientGrid extends Grid<ClientResponseDto> {
         wrapper.setClassName("grid-wrapper");
         splitLayout.addToPrimary(wrapper);
         wrapper.add(headerLayout, this, popover);
+    }
+	
+	public void attachAdminContextMenu(AuthenticationContext authContext) {
+        if (!authContext.hasRole("ADMIN")) return;
+ 
+        new AppGridContextMenu<>(this, List.of(
+ 
+            new GridContextMenuAction<>(
+                "Редагувати",
+                VaadinIcon.EDIT,
+                false,
+                this::select
+            ),
+ 
+            new GridContextMenuAction<>(
+                "Видалити клієнта",
+                VaadinIcon.TRASH,
+                true,
+                this::openDeleteConfirm
+            )
+        ));
+    }
+	
+	private void openDeleteConfirm(ClientResponseDto client) {
+        ConfirmDialog dialog = new ConfirmDialog();
+        dialog.setHeader("Видалити клієнта?");
+        dialog.setText("Клієнт «" + client.getName() + " " + client.getSurname()
+                + "» буде видалений безповоротно.");
+        dialog.setCancelable(true);
+        dialog.setCancelText("Скасувати");
+        dialog.setConfirmText("Видалити");
+        dialog.setConfirmButtonTheme("error primary");
+ 
+        dialog.addConfirmListener(e -> {
+            try {
+                clientService.deleteClient(client.getId());
+                refreshGrid();
+                Notification n = Notification.show(
+                        "Клієнта видалено", 3000, Notification.Position.BOTTOM_END);
+                n.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            } catch (Exception ex) {
+                Notification n = Notification.show(
+                        "Помилка: " + ex.getMessage(), 5000, Notification.Position.BOTTOM_END);
+                n.addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+        });
+ 
+        dialog.open();
     }
 }

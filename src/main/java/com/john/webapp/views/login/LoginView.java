@@ -15,10 +15,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 @Route(value = "login")
 public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
-    //private final AuthenticatedUser authenticatedUser;
-
-    public LoginView(/*AuthenticatedUser authenticatedUser*/) {
-        //this.authenticatedUser = authenticatedUser;
+    public LoginView() {
         setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
 
         LoginI18n i18n = LoginI18n.createDefault();
@@ -34,15 +31,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-//        if (authenticatedUser.get().isPresent()) {
-//            // Already logged in
-//            setOpened(false);
-//            event.forwardTo("");
-//        }
-        
-        setOpened(false);
-        event.forwardTo("");
-
-        setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));
+        setError(event.getLocation().getQueryParameters()
+                .getParameters().containsKey("error"));
     }
 }

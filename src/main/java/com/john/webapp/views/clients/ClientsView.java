@@ -16,7 +16,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility.MaxWidth;
+import com.vaadin.flow.spring.security.AuthenticationContext;
 
 import jakarta.annotation.security.RolesAllowed;
 import java.util.Optional;
@@ -25,7 +25,7 @@ import org.vaadin.lineawesome.LineAwesomeIconUrl;
 @PageTitle("Clients")
 @Route(value = "clients/:personID?/:action?(edit)", layout = MainLayout.class)
 @Menu(order = 1, icon = LineAwesomeIconUrl.ADDRESS_BOOK_SOLID)
-//@RolesAllowed("ADMIN")
+@RolesAllowed("ADMIN")
 public class ClientsView extends Div implements BeforeEnterObserver {
 	enum EditorState {
 	    CLOSED,
@@ -44,7 +44,8 @@ public class ClientsView extends Div implements BeforeEnterObserver {
     private final Button floatingButton;
     private final Div floatingActions;
     
-    public ClientsView(ClientServiceClient clientService) {
+    public ClientsView(ClientServiceClient clientService,
+            		   AuthenticationContext authContext) {
         this.clientService = clientService;
         addClassNames("clients-view");
         setSizeFull();
@@ -52,6 +53,8 @@ public class ClientsView extends Div implements BeforeEnterObserver {
         
         this.grid = new ClientGrid(clientService);
         this.form = new ClientForm(clientService, grid);
+        
+        grid.attachAdminContextMenu(authContext);
         
         // Create UI
         splitLayout = new SplitLayout();
