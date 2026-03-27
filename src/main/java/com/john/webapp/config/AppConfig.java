@@ -30,4 +30,12 @@ public class AppConfig {
             .baseUrl(url)
             .build();
     }
+    
+    @Bean
+    WebClient estimateWebClient(WebClient.Builder builder,
+                                @Value("${services.estimate.url}") String url) {
+        return WebClient.builder()
+        	.baseUrl(url)
+        	.build();
+    }
 }

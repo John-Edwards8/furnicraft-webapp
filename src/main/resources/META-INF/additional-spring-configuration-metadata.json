@@ -8,5 +8,10 @@
     "name": "services.order.url",
     "type": "java.lang.String",
     "description": "URL for OrderService"
+  },
+  {
+    "name": "services.estimate.url",
+    "type": "java.lang.String",
+    "description": "URL for EstimateService"
   }
 ]}

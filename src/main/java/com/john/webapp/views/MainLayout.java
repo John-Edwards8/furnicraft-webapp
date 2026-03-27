@@ -6,6 +6,8 @@ import java.util.List;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 import com.john.webapp.views.clients.ClientsView;
 import com.john.webapp.views.furnicraftdesigns.FurniCraftDesignsView;
+import com.john.webapp.views.orders.MyOrdersView;
+import com.john.webapp.views.orders.OrdersAdminView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
@@ -146,6 +148,11 @@ public class MainLayout extends AppLayout {
                     "Клієнти",
                     LineAwesomeIcon.ADDRESS_BOOK_SOLID.create(),
                     ClientsView.class
+            ));
+            items.add(new MenuItemInfo(
+                    "Замовлення",
+                    LineAwesomeIcon.CLIPBOARD_LIST_SOLID.create(),
+                    OrdersAdminView.class
             ));
         }
         

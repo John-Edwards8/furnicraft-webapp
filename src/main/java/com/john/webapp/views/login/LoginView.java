@@ -16,15 +16,23 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
     public LoginView() {
-        setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
+        setAction(RouteUtil.getRoutePath(
+                VaadinService.getCurrent().getContext(), getClass()));
 
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setHeader(new LoginI18n.Header());
         i18n.getHeader().setTitle("FurniCraft");
-        i18n.getHeader().setDescription("Login using user/user or admin/admin");
+        i18n.getHeader().setDescription(
+                "Дав Бог ремонт, дасть і на меблі");
         i18n.setAdditionalInformation(null);
-        setI18n(i18n);
 
+        LoginI18n.Form form = i18n.getForm();
+        form.setUsername("Email");
+        form.setPassword("Пароль");
+        form.setSubmit("Увійти");
+        i18n.setForm(form);
+
+        setI18n(i18n);
         setForgotPasswordButtonVisible(false);
         setOpened(true);
     }
